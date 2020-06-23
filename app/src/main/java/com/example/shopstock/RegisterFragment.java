@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +25,7 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = "SignupFragment";
+    private static final String TAG = "SignUpFragment";
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -56,10 +58,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     }
 
     private void signup() {
-        Log.d(TAG, "Signup");
+        Log.d(TAG, "SignUp");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignUpFailed();
             return;
         }
 
@@ -82,23 +84,23 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
+                        onSignUpSuccess();
+                        // onSignUpFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
     }
 
 
-    public void onSignupSuccess() {
+    public void onSignUpSuccess() {
         register_button.setEnabled(true);
         getActivity().setResult(RESULT_OK, null);
-        getActivity().finish();
+        Toast.makeText(getActivity().getBaseContext(), "Success Signing Up! Swipe to login", Toast.LENGTH_LONG).show();
         // TODO: Move from register fragment to login fragment when successful signup happens
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getActivity().getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+    public void onSignUpFailed() {
+        Toast.makeText(getActivity().getBaseContext(), "Sign up failed", Toast.LENGTH_LONG).show();
 
         register_button.setEnabled(true);
     }
@@ -125,8 +127,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             register_email.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            register_password.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 8 || password.length() > 20) {
+            register_password.setError("between 8 and 20 alphanumeric characters");
             valid = false;
         } else {
             register_password.setError(null);

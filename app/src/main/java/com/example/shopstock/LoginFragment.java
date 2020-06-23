@@ -90,6 +90,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
                 this.getActivity().finish();
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                startActivity(intent);
             }
         }
     }
@@ -97,6 +99,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
      public void onLoginSuccess() {
         login_button.setEnabled(true);
         getActivity().finish();
+        Intent intent = new Intent(getActivity(), HomeActivity.class);
+        startActivity(intent);
     }
 
     public void onLoginFailed() {
