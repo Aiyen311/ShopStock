@@ -2,12 +2,9 @@ package com.example.shopstock;
 
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Layout;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.shopstock.model.User;
+import com.example.shopstock.sql.DatabaseHelper;
 
 import butterknife.BindView;
 
@@ -36,6 +36,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.et_email) EditText register_email;
     @BindView(R.id.et_password) EditText register_password;
     @BindView(R.id.et_repassword) EditText register_re_password;
+    private DatabaseHelper databaseHelper;
+    private User user;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,15 +52,21 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         register_re_password = (EditText) view.findViewById(R.id.et_repassword);
 
         register_button.setOnClickListener(this);
+        initObjects();
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        signup();
+        signUp();
     }
 
-    private void signup() {
+    private void initObjects() {
+        databaseHelper = new DatabaseHelper(getActivity());
+        user = new User();
+    }
+
+    private void signUp() {
         Log.d(TAG, "SignUp");
 
         if (!validate()) {
@@ -77,7 +86,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         String password = register_password.getText().toString();
         String re_password = register_re_password.getText().toString();
 
-        // TODO: Implement your own signup logic here.
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        databaseHelper.addUser(user);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -96,7 +108,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         register_button.setEnabled(true);
         getActivity().setResult(RESULT_OK, null);
         Toast.makeText(getActivity().getBaseContext(), "Success Signing Up! Swipe to login", Toast.LENGTH_LONG).show();
-        // TODO: Move from register fragment to login fragment when successful signup happens
     }
 
     public void onSignUpFailed() {

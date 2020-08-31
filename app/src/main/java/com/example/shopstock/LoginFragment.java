@@ -4,7 +4,7 @@ package com.example.shopstock;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.shopstock.sql.DatabaseHelper;
 
 import butterknife.BindView;
 
@@ -32,6 +34,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     @BindView(R.id.btn_login) Button login_button;
     @BindView(R.id.et_username) EditText login_username;
     @BindView(R.id.et_password) EditText login_password;
+    private DatabaseHelper databaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,12 +46,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         login_password = view.findViewById(R.id.et_password);
 
         login_button.setOnClickListener(this);
+        initObjects();
         return view;
     }
 
     @Override
     public void onClick(View v){
         login();
+    }
+
+    private void initObjects() {
+        databaseHelper = new DatabaseHelper(getActivity());
     }
 
     private void login() {
@@ -61,15 +69,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
         login_button.setEnabled(false);
 
+        String username = login_username.getText().toString();
+        String password = login_password.getText().toString();
+
+        if(!databaseHelper.checkUser(username, password)){
+            onLoginFailed();
+            return;
+        }
+
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String username = login_username.getText().toString();
-        String password = login_password.getText().toString();
-
-        // TODO: Implement your own authentication logic here.
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -87,8 +99,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
+                Toast.makeText(getActivity().getBaseContext(), "Login Success", Toast.LENGTH_LONG).show();
                 this.getActivity().finish();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 startActivity(intent);
@@ -122,8 +133,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             login_username.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            login_password.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 8 || password.length() > 20) {
+            login_password.setError("between 8 and 20 alphanumeric characters");
             valid = false;
         } else {
             login_password.setError(null);
