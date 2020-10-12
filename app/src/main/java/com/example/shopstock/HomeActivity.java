@@ -45,6 +45,25 @@ public class HomeActivity extends AppCompatActivity {
                         Intent intent = new Intent(HomeActivity.this, MapsActivity.class);
                         startActivity(intent);
                         Toast.makeText(HomeActivity.this, "Map",Toast.LENGTH_SHORT).show();break;
+                    case R.id.search:
+                        intent = new Intent(HomeActivity.this, SearchableActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(HomeActivity.this, "Search Inventory",Toast.LENGTH_SHORT).show();break;
+                    /*case R.id.inventory:
+                        intent = new Intent(HomeActivity.this,InventoryActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(HomeActivity.this, "Inventory",Toast.LENGTH_SHORT).show();
+                     */
+                    case R.id.shopping:
+                        intent = new Intent(HomeActivity.this, ShoppingActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(HomeActivity.this, "My Cart",Toast.LENGTH_SHORT).show();break;
+                    case R.id.notification:
+                        Toast.makeText(HomeActivity.this, "Notifications",Toast.LENGTH_SHORT).show();break;
+
+
+
+
                     default:
                         return true;
                 }
