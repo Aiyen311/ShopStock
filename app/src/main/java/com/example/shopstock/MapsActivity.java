@@ -30,7 +30,9 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 
 /**
  * This demo shows how GMS Location can be used to check for changes to the users location.  The
@@ -40,8 +42,12 @@ import java.util.List;
  */
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback {
-
     GoogleMap mGoogleMap;
+    MarkerOptions options = new MarkerOptions();
+    private ArrayList<LatLng> latlngs = new ArrayList<>();
+    ArrayList<String> names = new ArrayList<>();
+
+
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     Location mLastLocation;
@@ -59,6 +65,14 @@ public class MapsActivity extends AppCompatActivity
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
+
+        // Latitude and Longitude Locations for EBT Stores, manual addition for now
+        latlngs.add(new LatLng(38.2332, -85.73996));
+        names.add("Logan Street Market");
+        latlngs.add(new LatLng( 38.22614, -85.80675));
+        names.add("Family Dollar 8696");
+        latlngs.add(new LatLng(38.27379, -85.79949));
+        names.add("CVS Pharmacy 6199");
     }
 
     @Override
@@ -75,6 +89,11 @@ public class MapsActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        for (LatLng point : latlngs) {
+            options.position(point);
+            googleMap.addMarker(options);
+        }
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(120000); // two minute interval
