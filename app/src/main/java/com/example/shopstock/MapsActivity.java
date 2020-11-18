@@ -1,6 +1,5 @@
 package com.example.shopstock;
 
-import com.example.shopstock.maps.FileRead;
 import com.example.shopstock.maps.MyMarker;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -11,7 +10,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import android.Manifest;
@@ -25,6 +23,14 @@ import androidx.core.app.ActivityCompat;
 
 import android.widget.Toast;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -40,7 +46,6 @@ public class MapsActivity extends AppCompatActivity
     GoogleMap mGoogleMap;
     ArrayList<MyMarker> markers = new ArrayList<>();
     Location currentLocation;
-    FileRead fileRead = new FileRead();
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     FusedLocationProviderClient mFusedLocationClient;
@@ -57,11 +62,11 @@ public class MapsActivity extends AppCompatActivity
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
-        markers = fileRead.readData();
-        MyMarker myMarker = new MyMarker(
-                new LatLng(38.26212, -85.81373),
-                "Test A");
-        markers.add(myMarker);
+        markers = readData();
+//        MyMarker myMarker = new MyMarker(
+//                new LatLng(38.26212, -85.81373),
+//                "Test A");
+//        markers.add(myMarker);
         fetchLocation();
     }
 
@@ -117,4 +122,33 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
+    public ArrayList readData() {
+
+        ArrayList<MyMarker> markers = new ArrayList<>();
+
+        try {
+            FileInputStream fis = new FileInputStream(new File("C\\Users\\adith\\Downloads\\ShopNames.xlsx"));
+            XSSFWorkbook wb = new XSSFWorkbook(fis);
+            XSSFSheet sheet = wb.getSheetAt(0);
+
+            for (Row row: sheet) {
+                double lat = row.getCell(0).getNumericCellValue();
+                double lon = row.getCell(1).getNumericCellValue();
+                String name = row.getCell(2).getStringCellValue();
+
+                MyMarker myMarker = new MyMarker (
+                        new LatLng(lat , lon),
+                        name);
+                markers.add(myMarker);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return markers;
+
+    }
 }
