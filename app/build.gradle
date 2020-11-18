@@ -1,8 +1,21 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 android {
+<<<<<<< HEAD
     compileSdkVersion 30
+=======
+    sourceSets {
+        main {
+            python.srcDir "some/other/dir"
+        }
+    }
+    compileSdkVersion 28
+>>>>>>> 7576633d8cf2e014c36948fe5504fcf7965a1c34
     defaultConfig {
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
         applicationId "com.example.shopstock"
         minSdkVersion 17
         targetSdkVersion 27
@@ -29,6 +42,7 @@ android {
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.opencsv:opencsv:4.6'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
